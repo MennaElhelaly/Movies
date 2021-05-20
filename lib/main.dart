@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_app/movie.dart';
 import 'package:flutter_app/sec.dart';
 
 void main() {
@@ -31,16 +33,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  List<String> movies = ["COCO", "Tangled", "Soul", "Mouana", "Mama","Soul", "Mouana", "Mama"];
-  List<String> images = ["assets/images/c.jpg", "assets/images/tan.jpg", "assets/images/mo.jpg", "assets/images/c.jpg", "assets/images/tan.jpg","assets/images/mo.jpg", "assets/images/c.jpg", "assets/images/tan.jpg"];
+  List<Movie> movies =[];
 
-  List ratings = ["70k reviews","15k reviews","12k reviews","200k reviews","125k reviews",
-    "70k reviews","15k reviews","12k reviews","200k reviews","125k reviews"];
-  List time = ["1h","2h 30M","7h 00M","1h 30M","2h 30M","3h","2h 30M","9h 00M"];
-  List date = ["2021/5/19","2000/5/3", "2015/5/3", "2000/5/3", "2013/5/19", "2021/5/19",
-    "2000/5/3", "2015/5/3"];
 
+  Future<List<Movie>>getMovies() async{
+    print("************* getting movies");
+    var response =await Dio().get(
+      'https://api.themoviedb.org/3/movie/now_playing?',queryParameters: {"api_key":"f55fbda0cb73b855629e676e54ab6d8e" }
+    );
+    print(response.data["results"].toString());
+    for (var item in response.data["results"] ){
+        Movie movie = Movie.fromJson(item);
+        movies.add(movie);
+    }
+    return movies;
+  }
+  @override
+  /*void initState() {
+    // TODO: implement initState
+    getMovies();
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +60,118 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-        body: Center(
+        body: Container(
+          child : FutureBuilder(
+            future: getMovies(),
+            builder: (context, snapshot){
+              if(snapshot.connectionState== ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator());
+              }
+              if(snapshot.hasError ){
+                return Center(
+                  child: Text(snapshot.error.toString()
+                  ),
+                );
+              }
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    print(index);
+                    return GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=>Second(movie: snapshot.data[index])));
+                        },
+                    child: Container(
+                      height: 130,
+                      color: Colors.white,
+                      margin: EdgeInsets.all(2),
+                      padding: EdgeInsets.all(2),
+                      child: Row(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.fromLTRB(10, 7, 15, 7),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network("https://image.tmdb.org/t/p/w200" + snapshot.data[index].posterPath,
+                                    height: 75.0, width: 125.0, fit: BoxFit.fill),
+                              )),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width-160,
+                                    child: Text(
+                                      snapshot.data[index].title,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  )),
+                              Container(
+                                padding: new EdgeInsets.fromLTRB(4, 3, 3, 0),
+                                child: Row(
+                                  children: [
+                                    Text(snapshot.data[index].voteAverage.toString(),
+                                        style: TextStyle(color: Colors.black)),
+                                    Text("     "),
+                                    Text(snapshot.data[index].voteCount.toString()+" Votes",
+                                        style: TextStyle(color: Colors.black)),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: new EdgeInsets.fromLTRB(0, 5, 3, 0),
+                                child: Row(
+                                  children: [
+                                      Icon(
+                                      Icons.star,
+                                      color: Colors.deepOrange,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.deepOrange,
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.blue,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: new EdgeInsets.fromLTRB(3, 5, 3, 0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.black,
+                                      size: 15.0,
+                                    ),
+                                    Text(" "+snapshot.data[index].releaseDate,
+                                        style: TextStyle(color: Colors.black)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                      ,
+
+                    ));
+                  }
+              );
+            },
+
+          )
+
+        )
+
+    );
+  }
+}
+/*
+Center(
             child: ListView.builder(
                 itemCount: 8,
                 itemBuilder: (context, index) {
@@ -73,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Padding(
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: Text(
-                                  movies[index],
+                                  movies2[index],
                                   style: TextStyle(color: Colors.black),
                                 )),
                             Container(
@@ -133,8 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ,
 
                   );
-                }))
-
-    );
-  }
-}
+                }
+                )
+        )
+ */
