@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
               tabs: [
                 Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Text("Now Playing",style: TextStyle(fontSize: 20),),
+                  child: Text("Now Playing",style: TextStyle(fontSize: 13),),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
