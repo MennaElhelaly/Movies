@@ -15,14 +15,17 @@ class Second extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-                child: Image.network("https://image.tmdb.org/t/p/w200" + movie.posterPath, fit :BoxFit.cover)),
+           Hero(
+              tag:movie.id,
+              child: Container(
+                width: double.infinity,
+                  child: Image.network("https://image.tmdb.org/t/p/w200" + movie.posterPath, fit :BoxFit.cover)),
+            ),
             Padding(
-                padding: EdgeInsets.fromLTRB(5, 8, 0, 5),
+                padding: EdgeInsets.fromLTRB(5, 8, 0, 4),
                 child: Text(
                   movie.title,
-                  style: TextStyle(color: Colors.deepOrange, fontSize: 25.0),
+                  style: TextStyle(color: Colors.deepOrange, fontSize: 25.0 ,fontWeight: FontWeight.bold),
                 )),
             Container(
               padding: new EdgeInsets.fromLTRB(3, 0, 3, 3),
@@ -30,17 +33,19 @@ class Second extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.star,
-                    color: Colors.deepOrange,
+                    color: Colors.deepOrangeAccent,
                   ),
                   Icon(
                     Icons.star,
-                    color: Colors.deepOrange,
+                    color: Colors.deepOrangeAccent,
                   ),
                   Icon(
                     Icons.star,
-                    color: Colors.blue,
+                    color: Colors.grey,
                   ),
-                  Text("     "),
+                  //Text("     "),
+
+                  SizedBox(width: 20),
                   Text(movie.voteCount.toString()+" Votes",
                       style: TextStyle(color: Colors.black, fontSize: 18.0)),
                 ],
@@ -62,7 +67,7 @@ class Second extends StatelessWidget {
                   ),
                 )),*/
             Padding(
-                padding: EdgeInsets.fromLTRB(8, 0, 0, 5),
+                padding: EdgeInsets.fromLTRB(8, 2, 0, 5),
                 child: Container(
                   child: Row(
                     children: [
@@ -71,6 +76,7 @@ class Second extends StatelessWidget {
                         color: Colors.blueGrey,
                         size: 20.0,
                       ),
+                      SizedBox(width: 6),
                       Text(movie.releaseDate,style: TextStyle(color: Colors.black)),
                     ],
                   ),
