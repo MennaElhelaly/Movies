@@ -4,33 +4,28 @@ import 'package:dio/dio.dart';
 import 'package:flutter_app/sec.dart';
 import 'package:provider/provider.dart';
 
+import 'favo.dart';
 import 'movie.dart';
 import 'movies_model.dart';
 
-class Pupolar extends StatefulWidget {
-  Pupolar({Key key, this.title}) : super(key: key);
+class Fav extends StatefulWidget {
+  Fav({Key key, this.title}) : super(key: key);
   final String title;
   @override
-  PupolarContan createState() => PupolarContan();
+  FavScreen createState() => FavScreen();
 }
 
-class PupolarContan extends State<Pupolar> {
+class FavScreen extends State<Fav> {
   @override
   Widget build(BuildContext context) {
-    Provider.of<MoviesModel>(context, listen: false).getMovies();
+    Provider.of<MoviesModel>(context, listen: false).getFavoriteList();
     return Consumer<MoviesModel>(
       builder: (_, model, __) {
         return ListView.builder(
-            itemCount: model.movies.length,
+            itemCount: model.favorite.length,
             itemBuilder: (context, index) {
-              Movie movie = model.movies[index];
+              Favorite movie = model.favorite[index];
               return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => Second(movie: movie)));
-                  },
                   child: Container(
                     height: 145,
                     color: Colors.white,
@@ -59,12 +54,12 @@ class PupolarContan extends State<Pupolar> {
                                 padding: EdgeInsets.fromLTRB(0, 13, 0, 0),
                                 child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width - 160,
+                                  MediaQuery.of(context).size.width - 160,
                                   child: Text(
                                     movie.title,
                                     style: TextStyle(
                                         color: Colors.deepOrange,
-                                        fontSize: 16.0,
+                                        fontSize: 20.0,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 )),
@@ -72,11 +67,11 @@ class PupolarContan extends State<Pupolar> {
                               padding: new EdgeInsets.fromLTRB(4, 3, 3, 0),
                               child: Row(
                                 children: [
-                                  Text(movie.voteAverage.toString(),
-                                      style: TextStyle(color: Colors.black)),
-                                  SizedBox(width: 10),
+                                  Text("7.3",
+                                      style: TextStyle(color: Colors.black,fontSize: 15.0)),
+                                  SizedBox(width: 15),
                                   Text(movie.voteCount.toString() + " Votes",
-                                      style: TextStyle(color: Colors.black)),
+                                      style: TextStyle(color: Colors.black,fontSize: 15.0)),
                                 ],
                               ),
                             ),
@@ -90,7 +85,7 @@ class PupolarContan extends State<Pupolar> {
                                     size: 15.0,
                                   ),
                                   Text(" " + movie.releaseDate,
-                                      style: TextStyle(color: Colors.black)),
+                                      style: TextStyle(color: Colors.black,fontSize: 13.0)),
                                 ],
                               ),
                             ),
